@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/justin/robotiq_ur10_sim_ws/install/setup.sh

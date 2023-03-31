@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: myur10_description
+    relative_path: urdf/myur10.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/myur10.srdf
+  CONFIG:
+    author_name: Justin Macapagal
+    author_email: macajj.30@gmail.com
+    generated_timestamp: 1674985465

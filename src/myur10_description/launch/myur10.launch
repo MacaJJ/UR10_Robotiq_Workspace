@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="limited" default="true" doc="If true, limits joint range [-PI, PI] on all joints."/>
+	<arg name="paused" default="false" doc="Starts gazebo in paused mode"/>
+	<arg name="gui" default="true" doc="Starts gazebo gui"/>
+
+	<!--Parameter files -->
+	<arg name="robot_model" value="ur10" />
+  	<arg name="joint_limit_params" default="$(find ur_description)/config/ur10/joint_limits.yaml"/>
+  	<arg name="kinematics_params" default="$(find ur_description)/config/ur10/default_kinematics.yaml"/>
+  	<arg name="physical_params" default="$(find ur_description)/config/ur10/physical_parameters.yaml"/>
+  	<arg name="visual_params" default="$(find ur_description)/config/ur10/visual_parameters.yaml"/>
+  	<arg name="safety_limits" default="false" doc="If True, enable the safety limits controller"/>
+  	<arg name="safety_pos_margin" default="0.15" doc="The lower/upper limits in the safety controller" />
+  	<arg name="safety_k_position" default="20" doc="Used to set k position in the safety controller" />
+
+  	<!-- Controller configuration -->
+  	<arg name="controller_config_file" default="$(find ur_gazebo)/config/ur10_controllers.yaml" doc="Config file used for defining the ROS-Control controllers."/>
+  	<arg name="controllers" default="joint_state_controller pos_joint_traj_controller" doc="Controllers that are activated by default."/>
+  	<arg name="stopped_controllers" default="joint_group_pos_controller" doc="Controllers that are initally loaded, but not started."/>
+
+  	<!-- robot_state_publisher configuration -->
+  	<arg name="tf_prefix" default="" doc="tf_prefix used for the robot."/>
+  	<arg name="tf_pub_rate" default="125" doc="Rate at which robot_state_publisher should publish transforms."/>
+
+	<!-- startup simulated world -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<!-- arg name="world_name" default="worlds/empty.world"/ -->
+		<arg name="world_name" value="$(find myur10_description)/world/test_env.world"/>
+		<arg name="paused" value="$(arg paused)"/>
+		<arg name="gui" value="$(arg gui)"/>
+	</include>
+
+	<param name="robot_description" command="$(find xacro)/xacro '$(find myur10_description)/urdf/myur10.urdf.xacro'"/>
+
+	<!-- push robot_description to factory and spawn robot in gazebo -->
+	<node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.0" respawn="false" output="screen" />
+
+	<!-- Robot state publisher -->
+  	<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    	<param name="publish_frequency" type="double" value="$(arg tf_pub_rate)" />
+    	<param name="tf_prefix" value="$(arg tf_prefix)" />
+  	</node>
+
+  	<!-- Load controller settings -->
+  	<rosparam file="$(arg controller_config_file)" command="load"/>
+
+  	<!-- Load and start the controllers listed in the 'controllers' arg. -->
+  	<node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner"
+    	args="$(arg controllers)" output="screen" respawn="false" />
+
+  	<!-- Load other controllers, but do not start them -->
+  	<node name="ros_control_stopped_spawner" pkg="controller_manager" type="spawner"
+    args="--stopped $(arg stopped_controllers)" output="screen" respawn="false" />
+    
+</launch>

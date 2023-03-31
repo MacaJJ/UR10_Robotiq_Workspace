@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<robot>
+
+	<gazebo reference="mount">
+		<mu1>0.2</mu1>
+		<mu2>0.2</mu2>
+		<material>Gazebo/Orange</material>
+	</gazebo>
+	
+	<gazebo reference="robotiq_coupler">
+		<mu1>0.9</mu1>
+		<mu2>0.9</mu2>
+		<material>Gazebo/FlatBlack</material>
+	</gazebo>
+
+	<!-- Camera -->
+	<gazebo reference="camera_link">
+		<sensor type="depth" name="camera1">
+			<update_rate>30.0</update_rate>
+			<camera name="head">
+				<horizontal_fov>1.3962634</horizontal_fov>
+				<image>
+					<width>640</width>
+					<height>480</height>
+					<format>B8G8R8</format>
+				</image>
+				<clip>
+					<near>0.02</near>
+					<far>300</far>
+				</clip>
+			</camera>
+			<!-- <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<updateRate>0.0</updateRate>
+				<cameraName>myur10/camera1</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<frameName>camera_link</frameName>
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+			</plugin> -->
+			<plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+				<baseline>0.2</baseline>
+				<alwaysOn>true</alwaysOn>
+				<updateRate>0.0</updateRate>
+				<cameraName>myur10/camera1</cameraName>
+				<imageTopicName>color/image_raw</imageTopicName>
+				<cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+				<depthImageTopicName>depth/image_raw</depthImageTopicName>
+				<depthImageInfoTopicName>depth/camera_info</depthImageInfoTopicName>
+				<pointCloudTopicName>depth/points</pointCloudTopicName>
+				<frameName>camera_depth_frame</frameName>
+				<pointCloudCutoff>0.05</pointCloudCutoff>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+				<CxPrime>0.0</CxPrime>
+				<Cx>0.0</Cx>
+				<Cy>0.0</Cy>
+				<focalLength>0</focalLength>
+				<hackBaseline>0.0</hackBaseline>
+			</plugin>
+		</sensor>
+	</gazebo>
+
+	<!-- Gazebo grasping plugin -->
+	<gazebo>
+		<plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
+			<arm>
+				<arm_name>manipulator</arm_name>
+				<palm_link>wrist_3_link</palm_link>
+				<gripper_link>robotiq_85_left_finger_tip_link</gripper_link>
+				<gripper_link>robotiq_85_right_finger_tip_link</gripper_link>
+			</arm>
+			<forces_angle_tolerance>100</forces_angle_tolerance>
+			<update_rate>4</update_rate>
+			<grip_count_threshold>4</grip_count_threshold>
+			<max_grip_count>8</max_grip_count>
+			<release_tolerance>0.005</release_tolerance>
+			<disable_collisions_on_attach>false</disable_collisions_on_attach>
+			<contact_topic>__default_topic__</contact_topic>
+		</plugin>
+	</gazebo>
+
+</robot>

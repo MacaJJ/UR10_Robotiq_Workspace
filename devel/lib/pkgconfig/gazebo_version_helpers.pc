@@ -1,0 +1,8 @@
+prefix=/home/justin/robotiq_ur10_sim_ws/devel
+
+Name: gazebo_version_helpers
+Description: Description of gazebo_version_helpers
+Version: 0.0.0
+Cflags: -I/home/justin/robotiq_ur10_sim_ws/src/gazebo-pkgs/gazebo_version_helpers/include
+Libs: -L${prefix}/lib -lgazebo_version_helpers
+Requires: gazebo_ros roscpp

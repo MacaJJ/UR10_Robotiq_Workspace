@@ -1,0 +1,4 @@
+<launch>
+	<node name="ObjectDetector" pkg="ur10_gripper_moveit_config" type="colour_segmentation_v2.py" output="screen"/>
+	<!-- <node name="image_read" pkg="ur10_gripper_moveit_config" type="show_contours.py" output="screen"/> -->
+</launch>

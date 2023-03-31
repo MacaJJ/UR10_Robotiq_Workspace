@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="myur10">
+	
+	<xacro:include filename="$(find myur10_description)/urdf/myur10.gazebo" />
+	<xacro:include filename="$(find myur10_description)/urdf/materials.xacro" />
+
+	<link name="world"/>
+	<link name="mount">
+		<inertial>
+			<origin xyz="0 0 0.35" rpy="0 0 0" />
+			<mass value="20"/>
+			<inertia ixx="200" ixy="200" ixz="200" iyy="200" iyz="200" izz="200" />
+		</inertial>
+
+		<visual>
+			<origin xyz="0 0 0.35" rpy="0 0 0" />
+			<geometry>
+				<box size="0.5 0.5 0.7" />
+			</geometry>
+			<material name="Gray"/>
+		</visual>
+
+		<collision>
+			<origin xyz="0 0 0.35" rpy="0 0 0" />
+			<geometry>
+				<box size="0.5 0.5 0.7" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<joint name="world_joint" type="fixed">
+		<parent link="world" />
+		<child link="mount" />
+		<origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+	</joint>
+
+	<!-- ur10 -->
+	<xacro:include filename="$(find ur_description)/urdf/inc/ur10_macro.xacro"/>
+	<xacro:ur10_robot prefix=""/>
+
+	<!-- girpper-->
+	<xacro:include filename="$(find robotiq_description)/urdf/robotiq_85_gripper.urdf.xacro"/>
+
+	<gazebo>
+		<plugin name="ros_control" filename="libgazebo_ros_control.so">
+		<!-- <robotNamespace>/myworkcell</robotNamespace> -->
+		</plugin>
+	</gazebo>
+
+	<link name="robotiq_coupler">
+		<visual>
+			<geometry>
+				<mesh filename="package://robotiq_description/meshes/robotiq_85_coupler.stl"/>
+			</geometry>
+			<material name="FlatBlack"/>
+		</visual>
+		<collision>
+			<geometry>
+				<mesh filename="package://robotiq_description/meshes/robotiq_85_coupler.stl"/>
+			</geometry>
+		</collision>
+		<inertial>
+			<origin xyz="2.073e-05 1.45286e-03 -1.1049e-03" rpy="0 0 0"/>
+			<mass value="0.168"/>
+			<inertia ixx="6.69695624e-05" ixy="5.21511788e-09" ixz="-2.74383009e-08" iyy="7.85088161e-05" iyz="5.41105193e-07" izz="1.41819717e-04"/>
+		</inertial>
+	</link>
+
+	<joint name="base_joint" type="fixed">
+		<parent link="mount"/>
+		<child link="base_link"/>
+		<origin xyz="0 0 0.7" rpy="0.0 0.0 0.0"/>
+	</joint>
+
+	<joint name="robotiq_coupler_joint" type="fixed">
+		<parent link="tool0"/>
+		<child link="robotiq_coupler"/>
+		<origin xyz="0 0 0.004" rpy="0 0 ${pi/2.0}"/>
+	</joint>
+
+	<xacro:robotiq_85_gripper prefix="" parent="robotiq_coupler">
+		<origin xyz="0 0 0.004" rpy="0 ${-pi/2} ${pi}"/>
+	</xacro:robotiq_85_gripper>
+	
+	<xacro:property name="camera_width" value="0.04" />
+
+	<link name="camera_link">
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${camera_width} ${camera_width} ${camera_width}"/>
+			</geometry>
+		</collision>
+
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${camera_width} ${camera_width} ${camera_width}"/>
+			</geometry>
+			<material name="Green"/>
+		</visual>
+
+		<inertial>
+			<mass value="1e-5"/>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+		</inertial>
+	</link>
+	
+	<!-- Adding Camera to the robot end effector -->
+	<joint name="camera_joint" type="fixed">
+		<origin xyz="0 -0.1 0" rpy="0 -1.57 1.57"/>
+		<parent link="wrist_3_link"/>
+		<child link="camera_link"/>
+	</joint>
+
+	<link name="camera_depth_frame"/>
+
+	<joint name="camera_depth_joint" type="fixed">
+		<origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
+		<parent link="camera_link"/>
+		<child link="camera_depth_frame"/>
+	</joint>
+
+</robot>

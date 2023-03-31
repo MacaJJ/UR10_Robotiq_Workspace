@@ -1,0 +1,2 @@
+set(detection_msgs_MESSAGE_FILES "/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/BoundingBox.msg;/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/BoundingBoxes.msg;/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/Detection2D.msg;/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/Detection2DArray.msg;/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/ObjectHypothesisWithPose.msg;/home/justin/robotiq_ur10_sim_ws/src/detection_msgs/msg/BoundingBox2D.msg")
+set(detection_msgs_SERVICE_FILES "")

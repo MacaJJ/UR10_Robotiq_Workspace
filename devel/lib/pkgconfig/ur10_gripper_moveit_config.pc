@@ -1,0 +1,8 @@
+prefix=/home/justin/robotiq_ur10_sim_ws/devel
+
+Name: ur10_gripper_moveit_config
+Description: Description of ur10_gripper_moveit_config
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
